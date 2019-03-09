@@ -7,12 +7,14 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 
+import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 
 
 public class MyWork extends Worker {
+    static String OUT_KEY="Output_Key";
 
 
     public MyWork(@NonNull Context context, @NonNull WorkerParameters workerParams) {
@@ -22,8 +24,13 @@ public class MyWork extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        showNotification("Hey I am Your work","Work is finished");
-        return Result.success();
+        //by sung getInputData Method will recive the input data
+        Data data = getInputData();
+        String inputValue = data.getString(MainActivity.KEY_INPUT);
+        showNotification("Hey I am Your work",inputValue);
+        Data data1 = new Data.Builder().putString(OUT_KEY,"Work finished successfully").build();
+        //we can pass the out put data through Result method
+        return Result.success(data1);
     }
 
     public void showNotification(String title, String description) {
